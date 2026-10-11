@@ -1,3 +1,7 @@
+## Unreleased
+
+- Add iOS support through Swift Package Manager (requires Flutter 3.44+).
+
 ## 4.3.0
 
 - Remove legacy plugin dependencies for new flutter version

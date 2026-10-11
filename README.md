@@ -2,7 +2,7 @@
 
 # nearby_connections
 
-An **ANDROID** flutter plugin for the [Nearby Connections API](https://developers.google.com/nearby/connections/overview)
+An **Android** and **iOS** flutter plugin for the [Nearby Connections API](https://developers.google.com/nearby/connections/overview)
 Currently supports Bytes and Files.
 
 **Transfer Data between multiple connected devices using fully offline peer to peer networking**
@@ -101,6 +101,36 @@ await Permission.nearbyWifiDevices.request()
 ```
 
 Checkout the [**Example**](https://github.com/mannprerak2/nearby_connections/tree/master/example) in Repository for more details.
+
+### iOS
+
+iOS uses Google's [Swift Nearby Connections](https://developers.google.com/nearby/connections/swift/get-started) library, which is only distributed through Swift Package Manager. It needs Flutter 3.44 or later with Swift Package Manager enabled; there is no CocoaPods support.
+
+Add these to your app's `ios/Runner/Info.plist`:
+
+```xml
+<key>NSBluetoothAlwaysUsageDescription</key>
+<string>Used to discover and connect to nearby devices.</string>
+<key>NSLocalNetworkUsageDescription</key>
+<string>Used to discover and connect to nearby devices on your network.</string>
+<key>NSBonjourServices</key>
+<array>
+    <string>_XXXXXXXXXXXX._tcp</string>
+</array>
+```
+
+Replace `XXXXXXXXXXXX` with the first 6 bytes of the SHA-256 hash of your `serviceId`, as uppercase hex:
+
+```sh
+printf '%s' 'your.service.id' | shasum -a 256 | cut -c1-12 | tr a-f A-F
+```
+
+Notes:
+
+- Use the same `serviceId` and `Strategy` on every device, including Android ones.
+- iOS cannot use Wi-Fi Direct, and this plugin does not use Wi-Fi hotspot, because joining one takes the iPhone off its current network. iOS and Android devices connect most reliably on the same Wi-Fi network, with mDNS allowed.
+- iOS suspends apps in the background, which ends advertising, discovery and connections.
+- **Known limitation:** an iPhone that discovers and connects to an Android advertiser only works on a shared Wi-Fi network. Over BLE, Android sends 514-byte packets, but Google's iOS library (`GNSCentralPeerManager.m`) cuts incoming packets down to the 512 bytes it can write. Any payload larger than about 500 bytes then fails to decrypt, and the connection drops. Connections that start on Wi-Fi LAN do not move to BLE when Wi-Fi is lost. An iPhone that advertises is not affected.
 
 ## NOTE
 
