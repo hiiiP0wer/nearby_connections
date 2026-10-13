@@ -12,11 +12,10 @@ let package = Package(
   ],
   dependencies: [
     .package(name: "FlutterFramework", path: "../FlutterFramework"),
-    // Fork of google/nearby at 2e9ff950 plus a fix for iOS centrals truncating BLE packets from
-    // Android peripherals (fix/ios-weave-packet-size). Repoint upstream once it lands there.
+    // google/nearby publishes no SwiftPM version tags, so pin a commit on main.
     .package(
-      url: "https://github.com/hiiiP0wer/nearby",
-      revision: "5b43d83c21445edabc5fe97160783a4121d418d9"
+      url: "https://github.com/google/nearby",
+      revision: "2e9ff95062bd003555e4c11d9096adb859cfce72"
     ),
   ],
   targets: [
